@@ -3,6 +3,8 @@
 #else
     #define APL 1
 #endif
+#define XPLM200
+#define XPLM300
 
 #define XPLM200
 #define XPLM300
