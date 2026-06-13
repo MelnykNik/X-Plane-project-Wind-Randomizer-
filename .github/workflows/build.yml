@@ -1,0 +1,37 @@
+name: Build X-Plane Plugin
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up MSVC (Visual Studio Compiler)
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Build Windows (.xpl)
+      run: |
+        cl /LD /O2 /I"./SDK/CHeaders/XPLM" /I"./SDK/CHeaders/Widgets" plugin.cpp /Fe:win.xpl /link /DLL
+
+    - name: Upload Windows Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: plugin-windows
+        path: win.xpl
+
+  build-mac:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build Mac (.xpl)
+      run: |
+        clang++ -O2 -dynamiclib -fPIC -undefined dynamic_lookup -I"./SDK/CHeaders/XPLM" -I"./SDK/CHeaders/Widgets" plugin.cpp -o mac.xpl
+
+    - name: Upload Mac Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: plugin-mac
+        path: mac.xpl
